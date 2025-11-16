@@ -1,15 +1,15 @@
-# في مجلد المشروع
-cat > nixpacks.toml << 'EOF'
 [phases.setup]
-nixPkgs = ['...', 'php83', 'php83Extensions.mbstring', 'php83Extensions.pdo_mysql']
+nixPkgs = ['...', 'php83', 'php83Extensions.mbstring', 'php83Extensions.pdo_mysql', 'apacheHttpd']
 
 [phases.build]
-cmds = ['composer install --no-dev --optimize-autoloader']
+cmds = [
+  'composer install --no-dev --optimize-autoloader',
+  'cp .env.example .env || true',
+  'php artisan key:generate --force',
+  'php artisan config:cache',
+  'php artisan route:cache',
+  'php artisan view:cache'
+]
 
 [start]
-cmd = 'heroku-php-apache2 public'
-EOF
-
-git add nixpacks.toml
-git commit -m "Add nixpacks.toml for Railway"
-git push
+cmd = 'apache2-foreground -D FOREGROUND'
