@@ -1,0 +1,15 @@
+# في مجلد المشروع
+cat > nixpacks.toml << 'EOF'
+[phases.setup]
+nixPkgs = ['...', 'php83', 'php83Extensions.mbstring', 'php83Extensions.pdo_mysql']
+
+[phases.build]
+cmds = ['composer install --no-dev --optimize-autoloader']
+
+[start]
+cmd = 'heroku-php-apache2 public'
+EOF
+
+git add nixpacks.toml
+git commit -m "Add nixpacks.toml for Railway"
+git push
