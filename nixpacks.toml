@@ -1,5 +1,6 @@
+cat > nixpacks.toml << 'EOF'
 [phases.setup]
-nixPkgs = ['...', 'php83', 'php83Extensions.mbstring', 'php83Extensions.pdo_mysql', 'apacheHttpd']
+nixPkgs = ['...', 'php83', 'php83Extensions.mbstring', 'php83Extensions.pdo_mysql']
 
 [phases.build]
 cmds = [
@@ -8,8 +9,10 @@ cmds = [
   'php artisan key:generate --force',
   'php artisan config:cache',
   'php artisan route:cache',
-  'php artisan view:cache'
+  'php artisan view:cache',
+  'chmod -R 755 storage bootstrap/cache'
 ]
 
 [start]
-cmd = 'apache2-foreground -D FOREGROUND'
+cmd = 'php -S 0.0.0.0:$PORT -t public public/index.php'
+EOF
